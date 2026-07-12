@@ -1,25 +1,33 @@
 #include <form.h>
 
 int main()
-{	FIELD *field[3];
+{
+	FIELD *field[3];
 	FORM  *my_form;
 	int ch;
+	int row, col;
+	char user[32];
+	char password[255];
 
-	/* Initialize curses */
-	initscr();
-	cbreak();
-	noecho();
-	keypad(stdscr, TRUE);
+	initscr(); // initialize
+	getmaxyx(stdscr, row, col); // getting the max rows & columns
+	cbreak(); // fix tty from 'cooked' mode
+	noecho(); // disable general echoing
+	keypad(stdscr, TRUE); // setup keyboard
+	//WINDOW *formwin = subwin()
+
+	int prow = row / 2; // centered prompt row y
+	int pcol = col / 2;  // centered prompt col x
 
 	/* Initialize the fields */
-	field[0] = new_field(1, 10, 4, 18, 0, 0);
-	field[1] = new_field(1, 10, 6, 18, 0, 0);
+	/* new_field(height, width, topleft row, topleft column, off-screen rows, additional buffers) */
+	field[0] = new_field(1, 10, prow, pcol, 0, 0);
+	field[1] = new_field(1, 10, prow + 2, pcol, 0, 0);
 	field[2] = NULL;
 
 	/* Set field options */
-	set_field_back(field[0], A_UNDERLINE); 	/* Print a line for the option 	*/
-	field_opts_off(field[0], O_AUTOSKIP);  	/* Don't go to next field when this */
-						/* Field is filled up 		*/
+	set_field_back(field[0], A_UNDERLINE); 	// Print a line for the option
+	field_opts_off(field[0], O_AUTOSKIP);  	// Don't go to next field when filled
 	set_field_back(field[1], A_UNDERLINE);
 	field_opts_off(field[1], O_AUTOSKIP);
 
@@ -28,32 +36,19 @@ int main()
 	post_form(my_form);
 	refresh();
 
-	mvprintw(4, 10, "Value 1:");
-	mvprintw(6, 10, "Value 2:");
+	mvprintw(prow, pcol - 9, "Username:");
+	mvprintw(prow + 2, pcol - 9, "Password:");
+	move(prow, pcol);
 	refresh();
-
-	/* Loop through to get user requests */
-	while((ch = getch()) != KEY_F(1))
-	{	switch(ch)
-		{	case KEY_DOWN:
-				/* Go to next field */
-				form_driver(my_form, REQ_NEXT_FIELD);
-				/* Go to the end of the present buffer */
-				/* Leaves nicely at the last character */
-				form_driver(my_form, REQ_END_LINE);
-				break;
-			case KEY_UP:
-				/* Go to previous field */
-				form_driver(my_form, REQ_PREV_FIELD);
-				form_driver(my_form, REQ_END_LINE);
-				break;
-			default:
-				/* If this is a normal character, it gets */
-				/* Printed				  */
-				form_driver(my_form, ch);
-				break;
-		}
-	}
+	// open fd3 and send \n for readiness notification
+	echo();
+	getstr(user);
+	/*if (strlen(user) > 32) {
+		goto:
+	}*/
+	move(prow + 2, pcol);
+	getstr(password);
+	noecho();
 
 	/* Un post form and free the memory */
 	unpost_form(my_form);
