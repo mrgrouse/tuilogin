@@ -1,0 +1,64 @@
+#include <curses.h>
+#include <signal.h>
+#include <unistd.h>
+
+
+static void initialize();
+static void finish(int sig);
+
+int
+main(int argc, char *argv[])
+{
+    int num = 0;
+
+    /* initialize your non-curses data structures here */
+
+    (void) signal(SIGINT, finish);      /* arrange interrupts to terminate */
+
+    initialize();
+
+    // TODO: before accepting input, we will send \n to fd 3 for notification readiness
+    move(5,5);
+
+    for (;;)
+    {
+        //int c = getch();     // refresh, accept single keystroke of input
+
+        mvgetstr(5, 5, c);
+
+				attrset(COLOR_PAIR(num % 8));
+				num++;
+
+        // process the command keystroke
+    }
+
+    finish(0);               /* we're done */
+}
+
+static void finish(int sig)
+{
+    endwin();
+
+    /* do your non-curses wrapup here */
+
+    exit(0);
+}
+
+static void initialize() {
+	(void) initscr(); // initialize curses library
+	keypad(stdscr, TRUE);  /* enable keyboard mapping */
+  (void) nonl();         /* tell curses not to do NL->CR/NL on output */
+  (void) cbreak();       /* take input chars one at a time, no wait for \n */
+  (void) echo();         /* echo input - in color */
+
+if (has_colors()) {
+        start_color();
+        init_pair(1, COLOR_RED,     COLOR_BLACK);
+        init_pair(2, COLOR_GREEN,   COLOR_BLACK); // Simple color assignment, often all we need.  Color pair 0 cannot
+        init_pair(3, COLOR_YELLOW,  COLOR_BLACK); // be redefined.  This example uses the same value for the color
+        init_pair(4, COLOR_BLUE,    COLOR_BLACK); // pair as for the foreground color, though of course that is not
+        init_pair(5, COLOR_CYAN,    COLOR_BLACK); // necessary
+        init_pair(6, COLOR_MAGENTA, COLOR_BLACK);
+        init_pair(7, COLOR_WHITE,   COLOR_BLACK);
+    }
+}
