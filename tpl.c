@@ -2,8 +2,8 @@
 
 int main()
 {
-	FIELD *field[3];
-	FORM  *my_form;
+	FIELD *field[2];
+	FORM  *login_form;
 	int ch;
 	int row, col;
 	char user[32];
@@ -23,7 +23,6 @@ int main()
 	/* new_field(height, width, topleft row, topleft column, off-screen rows, additional buffers) */
 	field[0] = new_field(1, 10, prow, pcol, 0, 0);
 	field[1] = new_field(1, 10, prow + 2, pcol, 0, 0);
-	field[2] = NULL;
 
 	/* Set field options */
 	set_field_back(field[0], A_UNDERLINE); 	// Print a line for the option
@@ -32,8 +31,8 @@ int main()
 	field_opts_off(field[1], O_AUTOSKIP);
 
 	/* Create the form and post it */
-	my_form = new_form(field);
-	post_form(my_form);
+	login_form = new_form(field);
+	post_form(login_form);
 	refresh();
 
 	mvprintw(prow, pcol - 9, "Username:");
@@ -51,8 +50,8 @@ int main()
 	noecho();
 
 	/* Un post form and free the memory */
-	unpost_form(my_form);
-	free_form(my_form);
+	unpost_form(login_form);
+	free_form(login_form);
 	free_field(field[0]);
 	free_field(field[1]);
 
