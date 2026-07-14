@@ -1,0 +1,15 @@
+tpl - tui PAM login
+===================
+tpl is a simple ncurses /bin/login that works with PAM
+
+Requirements
+------------
+libform
+
+Installation
+------------
+TODO
+
+Running tpl
+-----------
+TODO
