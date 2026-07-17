@@ -1,15 +1,30 @@
-tpl - tui PAM login
-===================
-tpl is a simple ncurses /bin/login that works with PAM
+tuilogin
+========
+a simple ncurses /bin/login
 
-Requirements
+Requirements:
 ------------
-libform
+ - libc
+ - libncurses
+ - libform
+ - bmake/make
 
 Installation
 ------------
-TODO
+run `[b]make install`
 
-Running tpl
+Running tuilogin
 -----------
 TODO
+
+Basic outline of tuilogin:
+-----------------------------
+TODO: ensure program is run with root
+initialize ncurses
+set up a login form with libform
+write '\n' to file descriptor 3 for readiness notification
+get the username and password as strings from the user
+safely close ncurses
+TODO: check their validity and error appropriately
+TODO: switch to the user and group
+TODO: execve() into the user's shell
